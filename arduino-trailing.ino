@@ -1,6 +1,3 @@
-// TODO:
-// fix retrigger delay
-
 #include "debug.h"
 #include "pins.h"
 #include "constants.h"
