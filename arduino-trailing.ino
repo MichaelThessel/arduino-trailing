@@ -87,7 +87,7 @@ bool checkContact(State *state) {
 
 // Enable the laser
 void enableLaser(State *state) {
-    state->laserLevel = LASER_INIT_BRIGHTNESS;
+    state->laserLevel = LASER_START_BRIGHTNESS;
     state->debounceTime = 0;
     analogWrite(state->laserPin, state->laserLevel);
 }
@@ -99,7 +99,7 @@ void processFade(State *state) {
         return;
     }
 
-    //state->laserLevel -= LASER_INIT_BRIGHTNESS / (LASER_FADE_TIME / PROGRAM_DELAY);
+    //state->laserLevel -= LASER_START_BRIGHTNESS / (LASER_FADE_TIME / PROGRAM_DELAY);
     state->laserLevel -= 0.5;
 
     if (state->laserLevel <= 0) {
