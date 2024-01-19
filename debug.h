@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #ifdef DEBUG
 #define LEDONX(x) { digitalWrite(LED_DEBUG, HIGH); delay(x); digitalWrite(LED_DEBUG, LOW); }
 #define LEDON() { digitalWrite(LED_DEBUG, HIGH); }
