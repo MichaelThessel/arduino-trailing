@@ -13,7 +13,7 @@ typedef struct {
     bool previousState;
     bool debounceState = false;
     int debounceTime = 0;
-    float laserState = 0;
+    float laserLevel = 0;
 } State;
 
 State state0;
@@ -56,7 +56,7 @@ void loop() {
 // Processes the contact change
 void processContact(State *state) {
     // Exit if the laser is already on
-    if (state->laserState > 0) {
+    if (state->laserLevel > 0) {
         return;
     }
 
@@ -87,25 +87,25 @@ bool checkContact(State *state) {
 
 // Enable the laser
 void enableLaser(State *state) {
-    state->laserState = LASER_INIT_BRIGHTNESS;
+    state->laserLevel = LASER_INIT_BRIGHTNESS;
     state->debounceTime = 0;
-    analogWrite(state->laserPin, state->laserState);
+    analogWrite(state->laserPin, state->laserLevel);
 }
 
 // Fade the laser over time
 void processFade(State *state) {
     // Don't fade if the laser is off
-    if (state->laserState == 0) {
+    if (state->laserLevel == 0) {
         return;
     }
 
-    //state->laserState -= LASER_INIT_BRIGHTNESS / (LASER_FADE_TIME / PROGRAM_DELAY);
-    state->laserState -= 0.5;
+    //state->laserLevel -= LASER_INIT_BRIGHTNESS / (LASER_FADE_TIME / PROGRAM_DELAY);
+    state->laserLevel -= 0.5;
 
-    if (state->laserState <= 0) {
-        state->laserState = 0;
+    if (state->laserLevel <= 0) {
+        state->laserLevel = 0;
         state->previousState = checkContact(state);
     }
 
-    analogWrite(state->laserPin, (int) state->laserState);
+    analogWrite(state->laserPin, (int) state->laserLevel);
 }
