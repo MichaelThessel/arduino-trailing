@@ -1,6 +1,5 @@
 // TODO:
 // fix retrigger delay
-// Figure out why dynamic fade is not working
 
 #include "debug.h"
 #include "pins.h"
@@ -70,7 +69,10 @@ void processContact(State *state) {
         state->debounceTime = 0;
     }
 
+    // If the currently detected change has persisted for the debounce period
+    // and is different from the previously detected state turn on the laser
     if (state->debounceTime >= CONTACT_DEBOUNCE && currentState != state->previousState) {
+        state->debounceTime = 0;
         enableLaser(state);
     }
 }
@@ -88,7 +90,6 @@ bool checkContact(State *state) {
 // Enable the laser
 void enableLaser(State *state) {
     state->laserLevel = LASER_START_BRIGHTNESS;
-    state->debounceTime = 0;
     analogWrite(state->laserPin, state->laserLevel);
 }
 
@@ -99,9 +100,9 @@ void processFade(State *state) {
         return;
     }
 
-    //state->laserLevel -= LASER_START_BRIGHTNESS / (LASER_FADE_TIME / PROGRAM_DELAY);
-    state->laserLevel -= 0.5;
+    state->laserLevel -= (float) LASER_START_BRIGHTNESS / (float) (LASER_FADE_TIME / (float) PROGRAM_DELAY);
 
+    // Reset the laser
     if (state->laserLevel <= 0) {
         state->laserLevel = 0;
         state->previousState = checkContact(state);
