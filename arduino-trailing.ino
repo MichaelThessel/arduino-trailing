@@ -60,7 +60,7 @@ void processContact(State *state) {
         return;
     }
 
-    int currentState = checkContact(state->contactPin);
+    int currentState = checkContact(state);
 
     // Debounce
     if (currentState == state->debounceState) {
@@ -77,8 +77,8 @@ void processContact(State *state) {
 
 // Checks if a contact is connected or not
 // NOTE: these will be LOW when connected and HIGH when disconnected
-bool checkContact(int pin) {
-    if (digitalRead(pin) == LOW) {
+bool checkContact(State *state) {
+    if (digitalRead(state->contactPin) == LOW) {
         return true;
     } else {
         return false;
@@ -92,6 +92,7 @@ void enableLaser(State *state) {
     analogWrite(state->laserPin, state->laserState);
 }
 
+// Fade the laser over time
 void processFade(State *state) {
     // Don't fade if the laser is off
     if (state->laserState == 0) {
@@ -103,8 +104,7 @@ void processFade(State *state) {
 
     if (state->laserState <= 0) {
         state->laserState = 0;
-        state->previousState = checkContact(state->contactPin);
-        return;
+        state->previousState = checkContact(state);
     }
 
     analogWrite(state->laserPin, (int) state->laserState);
