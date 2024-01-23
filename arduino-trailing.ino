@@ -25,6 +25,10 @@ void setup() {
 
     setupState(&state0, CONTACT_PIN0, LASER_PIN0);
     setupState(&state1, CONTACT_PIN1, LASER_PIN1);
+
+    // Turn on lasers initially to spot issues when powering on the system
+    enableLaser(&state0);
+    enableLaser(&state1);
 }
 
 // Setup the state for a laser
