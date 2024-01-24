@@ -71,8 +71,9 @@ void processContact(State *state) {
     }
 
     // If the currently detected change has persisted for the debounce period
-    // and is different from the previously detected state turn on the laser
-    if (state->debounceTime >= CONTACT_DEBOUNCE && currentState != state->previousState) {
+    // and is different from the previously detected state and the contact is
+    // disconnected turn on the laser
+    if (state->debounceTime >= CONTACT_DEBOUNCE && currentState != state->previousState && !currentState) {
         state->debounceTime = 0;
         enableLaser(state);
     }
