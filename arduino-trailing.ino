@@ -8,7 +8,7 @@ typedef struct {
 
     bool previousState;
     bool debounceState = false;
-    int debounceTime = 0;
+    unsigned int debounceTime = 0;
     float laserLevel = 0;
 } State;
 
@@ -64,18 +64,23 @@ void processContact(State *state) {
 
     // Debounce
     if (currentState == state->debounceState) {
-        state->debounceTime += PROGRAM_DELAY;
+        if (state->debounceTime < UINT_MAX) {
+            state->debounceTime += PROGRAM_DELAY;
+        }
     } else {
         state->debounceState = currentState;
         state->debounceTime = 0;
     }
 
-    // If the currently detected state has persisted for the debounce period
-    // and is different from the previously detected state and the contact is
-    // disconnected turn on the laser
-    if (state->debounceTime >= CONTACT_DEBOUNCE && currentState != state->previousState && !currentState) {
+    // If the currently detected change has persisted for the debounce period
+    // and is different from the previously detected state turn on the laser
+    if (state->debounceTime >= CONTACT_DEBOUNCE && currentState != state->previousState) {
         state->debounceTime = 0;
-        enableLaser(state);
+        state->previousState = currentState;
+
+        if (!currentState) {
+            enableLaser(state);
+        }
     }
 }
 
@@ -107,7 +112,6 @@ void processFade(State *state) {
     // Reset the laser
     if (state->laserLevel <= 0) {
         state->laserLevel = 0;
-        state->previousState = checkContact(state);
     }
 
     analogWrite(state->laserPin, (int) state->laserLevel);

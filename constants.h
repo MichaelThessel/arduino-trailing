@@ -1,3 +1,5 @@
+#define UINT_MAX 65536
+
 const int PROGRAM_DELAY = 1;      // Program delay for main(loop)
 
 const int CONTACT_DEBOUNCE = 20;
